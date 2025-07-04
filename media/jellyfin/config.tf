@@ -31,15 +31,6 @@ resource "proxmox_virtual_environment_download_file" "cloud_image"{
   url = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
 }
 
-
-resource "proxmox_virtual_environment_download_file" "latest_ubuntu_24_noble_lxc_img" {
-  content_type = "vztmpl"
-  datastore_id = "local"
-  node_name    = "prox"
-  url          = "http://download.proxmox.com/images/system/ubuntu-24.10-standard_24.10-1_amd64.tar.zst"
-}
-
-
 resource "proxmox_virtual_environment_file" "user_data_cloud_config" {
   content_type = "snippets"
   datastore_id = "local"
@@ -74,50 +65,4 @@ resource "proxmox_virtual_environment_file" "user_data_cloud_config" {
     file_name="user_data_cloud_config.yaml"
 
   }
-}
-
-resource "proxmox_virtual_environment_file" "mullvad_config" {
-  content_type = "snippets"
-  datastore_id = "local"
-  node_name    = "prox"
-
-  source_raw {
-    data = <<-EOF
-    #cloud-config
-    hostname: mullvad-booty
-    timezone: America/Los_Angeles
-    users:
-      - default
-      - name: vlad
-        groups:
-          - sudo
-        shell: /bin/bash
-        ssh_authorized_keys:
-          - ${trimspace(tls_private_key.random_ssh_key.public_key_openssh)}
-        sudo: ALL=(ALL) NOPASSWD:ALL
-    package_update: true
-    packages:
-      - qemu-guest-agent
-      - net-tools
-      - curl
-      - 
-    runcmd:
-      - systemctl enable qemu-guest-agent
-      - systemctl start qemu-guest-agent
-      - curl -fsSLo /usr/share/keyrings/mullvad-keyring.asc https://repository.mullvad.net/deb/mullvad-keyring.asc
-      - echo "deb [signed-by=/usr/share/keyrings/mullvad-keyring.asc arch=amd64] https://repository.mullvad.net/deb/stable noble main" | tee /etc/apt/sources.list.d/mullvad.list
-      - apt update && apt install mullvad-vpn -y
-      - echo "done" > /tmp/cloud-config.done
-
-
-    EOF
-
-    file_name="mullvad_config.yaml"
-
-  }
-}
-
-output "vm_info" {
-  value = proxmox_virtual_environment_vm.tailscale-ubuntu-vm
-  sensitive = true
 }

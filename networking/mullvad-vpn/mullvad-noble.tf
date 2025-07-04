@@ -5,7 +5,7 @@ resource "proxmox_virtual_environment_vm" "mullvad-vpn-ubuntu" {
 
 
   memory {
-    dedicated = 4096
+    dedicated = 2048
   }
 
   initialization {
@@ -36,7 +36,7 @@ resource "proxmox_virtual_environment_vm" "mullvad-vpn-ubuntu" {
     interface    = "virtio0"
     iothread     = true
     discard      = "on"
-    size         = 20
+    size         = 10
   }
 
 
