@@ -8,7 +8,7 @@ Each subproject contains its own `README.md` with setup instructions. To get sta
 
 ### 🧪 Labs
 
-* [`labs/saltyfleet/`](saltyfleet) – A SaltStack lab environment built with Terraform. Automatically deploys a Salt master and serveral minion VMs.
+* [`saltyfleet`](labs/saltyfleet/) – A SaltStack lab environment built with Terraform. Automatically deploys a Salt master and serveral minion VMs.
 
 ### 🌐 Networking
 
