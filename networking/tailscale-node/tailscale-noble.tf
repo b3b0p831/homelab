@@ -36,13 +36,47 @@ resource "proxmox_virtual_environment_vm" "tailscale-ubuntu-vm" {
 
    network_device {
      bridge = "inet1"
-#     mac_address = "bc:24:45:be:e4:fa"
   }
 
    network_device {
      bridge = "pnet1"
-#     mac_address = "bc:24:45:a7:f4:ff"
   }
 
 }
 
+resource "proxmox_virtual_environment_file" "user_data_cloud_config" {
+  content_type = "snippets"
+  datastore_id = "local"
+  node_name    = "prox"
+
+  source_raw {
+    data = <<-EOF
+    #cloud-config
+    hostname: tailscale-prox
+    timezone: America/Los_Angeles
+    users:
+      - default
+      - name: tail
+        groups:
+          - sudo
+        shell: /bin/bash
+        ssh_authorized_keys:
+          - ${trimspace(tls_private_key.random_ssh_key.public_key_openssh)}
+        sudo: ALL=(ALL) NOPASSWD:ALL
+    package_update: true
+    packages:
+      - qemu-guest-agent
+      - net-tools
+      - curl
+    runcmd:
+#     - <Command to init tailscale
+      - systemctl enable qemu-guest-agent
+      - systemctl start qemu-guest-agent
+      - echo "done" > /tmp/cloud-config.done
+
+    EOF
+
+    file_name="user_data_cloud_config.yaml"
+
+  }
+}
