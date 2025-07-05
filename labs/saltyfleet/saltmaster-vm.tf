@@ -11,7 +11,8 @@ resource "proxmox_virtual_environment_vm" "saltstack-master" {
   initialization {
     ip_config {
       ipv4 {
-        address = "dhcp"
+        address = "192.168.0.33/24"
+        gateway = "192.168.0.1"
       }
     }
 
@@ -19,7 +20,6 @@ resource "proxmox_virtual_environment_vm" "saltstack-master" {
       ipv4 {
         address = "dhcp"
       }
-
     }
 
 
@@ -39,12 +39,12 @@ resource "proxmox_virtual_environment_vm" "saltstack-master" {
 
 
    network_device {
-     bridge = "vmbr0"
+     bridge = "vmbr1"
   }
 
 
    network_device {
-     bridge = "pnet1"
+     bridge = "inet1"
   }
 
 }
