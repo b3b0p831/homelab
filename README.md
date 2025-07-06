@@ -1,5 +1,7 @@
 # homelab IaC
 
+![proxmox homelab](imgs/homelab)
+
 A collection of terraform IaC that makes up my current proxmox homelab.
 
 Each subproject contains its own `README.md` with setup instructions. To get started, navigate into the respective directory and follow the provided guide.
